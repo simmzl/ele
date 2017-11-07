@@ -34,3 +34,8 @@ vue1.0升至2.0+后，v-link改为`<router-view></router-view>`,入口js文件�
 
 实现移动端一像素边框的方法：[利用min-device-pixel-ratio媒体功能实现真正的1像素](http://blog.csdn.net/zzxboy1/article/details/56016475)
 
+### vue-resource
+使用vue-resource时注意`this.$http.get(url).then((res) => {})`中回调函数then()中获取到的json内容在res.body,data中。
+在使用ajax的get方法获取数据来填充app.vue内seller等对象之前，seller等对象还是空对象，所以在用seller内的数据渲染时，需要加v-if判断seller等对象是否有值，
+否则会报错。
+
