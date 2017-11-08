@@ -39,3 +39,6 @@ vue1.0升至2.0+后，v-link改为`<router-view></router-view>`,入口js文件�
 在使用ajax的get方法获取数据来填充app.vue内seller等对象之前，seller等对象还是空对象，所以在用seller内的数据渲染时，需要加v-if判断seller等对象是否有值，
 否则会报错。
 
+### sticky footers
+
+
