@@ -40,5 +40,86 @@ vue1.0升至2.0+后，v-link改为`<router-view></router-view>`,入口js文件�
 否则会报错。
 
 ### sticky footers
+sticky footers，即**粘性页脚布局**，在遇到下面两个布局的时候需要用到：
+- 在内容未撑满页面时，footer固定在底部 
+- 在内容超出页面高度时，footer随着页面的变大而往下移动，也保持在页面底部。
 
-
+#### 一种兼容性最佳的解决方案（负margin布局）
+##### 思路:
+ 一般情况下，一个网页分为header、content、footer；
+ - 将头部和内容装入一个容器wrapper-main，再将wrapper-main封装到wrapper中；
+ - 将wrapper的min-height设为100%，wrapper-main的padding-bottom设为footer的高度;
+ - 将footer的margin-top设为负的自身的高度;
+ 
+ 这样就达到了当wrapper的高度为100%时，footer固定在视口的底部，当其高度大于100%时，footer则一直在wrapper后面的效果；
+```html
+<div class="wrapper clearfix">
+  <div class="wrapper-main">
+    <header>头部</header>
+    <div class="content">页面内容</div>  
+</div>
+</div>
+<footer>页脚</footer>
+```
+```css
+.wrapper{
+  min-height: 100%;
+}
+.wrapper-main{
+  padding-bottom: 50px;
+}
+footer{
+  position: relative;
+  height: 50px;
+  margin-top: -50px;
+  clear: both;
+}
+.clearfix:after {
+  display: block;
+  content: '';
+  clear: both;
+  height: 0;
+  visibility: hidden
+}
+```
+#### 第二种：flex布局
+##### 思路
+讲header和content包装在一个wrapper-main内，再将footer和wrapper-main包装在display为flex的一个wrapper内。
+```html
+<div class="wrapper">
+  <div class="wrapper-main">
+    <header>头部</header>
+    <div class="content">页面内容</div>
+  </div>
+  <footer>页脚</footer>
+</div>
+```
+```css
+.wrapper{
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.wrapper-main{
+  flex: 1;
+}
+footer{
+  flex: 0;
+}
+```
+### vue过渡效果
+vue2+已经将过渡效果升级为`transition` 的封装组件，具体使用：
+```html
+<transition name="fade">
+  <p>hello</p>
+</transition>
+```
+```css
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active in below version 2.1.8 */ {
+  opacity: 0
+}
+```
+[官方文档](https://cn.vuejs.org/v2/guide/transitions.html)
