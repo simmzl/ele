@@ -137,11 +137,14 @@ vue2+已经将过渡效果升级为`transition` 的封装组件，具体使用�
 ```
 [官方文档](https://cn.vuejs.org/v2/guide/transitions.html)
 
-### 好的编程习惯--写css时尽量用class名而非标签名，在渲染性能上，class优于标签，尤其在层级嵌套较深时。
+### 好的编程习惯
+写css时尽量用class名而非标签名，在渲染性能上，class优于标签，尤其在层级嵌套较深时。
 
-### Vue 提供了一个可以获取 DOM 对象的接口—— vm.$refs；在vue 1.0中使用`v-el`定义element,2.0 升级为 `ref`
+### Vue 获取 DOM 对象的接口—— vm.$refs
+在vue 1.0中使用`v-el`定义element,2.0 升级为 `ref`
 
-### `vm.$nextTick( [callback] )`在修改数据之后立即使用这个方法，获取更新后的 DOM。
+### vm.$nextTick( [callback] )
+`vm.$nextTick( [callback] )`在修改数据之后立即使用这个方法，获取更新后的 DOM。
  ```javascript
 new Vue({
   methods: {
@@ -166,6 +169,8 @@ new Vue({
   <div class="menu"></div>
   <div class="content"></div>
 </div>
+
+
 <style>
   .goods{
     display: flex;
