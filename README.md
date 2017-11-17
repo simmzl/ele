@@ -1,6 +1,19 @@
 # ele
 
-> Vue.js 仿[饿了么](https://h5.ele.me)
+> Vue.js 仿[饿了么Web App](https://h5.ele.me)
+
+## 技术栈
+
+- vue
+- vuex
+- vue-router
+- vue-resource
+- axios
+- webpack
+- eslint
+- better-scroll
+- stylus
+- postCss
 
 ## Build Setup
 
@@ -123,3 +136,59 @@ vue2+已经将过渡效果升级为`transition` 的封装组件，具体使用�
 }
 ```
 [官方文档](https://cn.vuejs.org/v2/guide/transitions.html)
+
+### 好的编程习惯--写css时尽量用class名而非标签名，在渲染性能上，class优于标签，尤其在层级嵌套较深时。
+
+### Vue 提供了一个可以获取 DOM 对象的接口—— vm.$refs；在vue 1.0中使用`v-el`定义element,2.0 升级为 `ref`
+
+### `vm.$nextTick( [callback] )`在修改数据之后立即使用这个方法，获取更新后的 DOM。
+ ```javascript
+new Vue({
+  methods: {
+    example: function () {
+      // 修改数据
+      this.message = 'changed'
+      // DOM 还没有更新
+      this.$nextTick(function () {
+        // DOM 现在更新了
+        // `this` 绑定到当前实例
+        this.doSomething();
+      })
+    }
+  }
+})
+```
+
+### 左边栏固定宽度，右侧自动适应
+#### 方法之一：使用flex布局
+```html
+<div class="goods">
+  <div class="menu"></div>
+  <div class="content"></div>
+</div>
+<style>
+  .goods{
+    display: flex;
+    height: 400px;
+  }
+  .menu{
+    background: #4FB3A4;
+    flex: 0 0 100px;
+    /*flex: none | [ <'flex-grow'> <'flex-shrink'> <'flex-basis'> 默认 0 1 auto]*/
+    /*flex-grow：定义项目的放大比例，默认为0*/
+    /*flex-shrink：定义了项目的缩小比例，默认为1*/
+    /*flex-basis：定义了在分配多余空间之前，项目占据的主轴空间（main size）*/
+  }
+  .content{
+    flex: 1;
+    background: yellow;
+  }
+</style>
+```
+更多方法参考我的一篇总结：[左侧定宽，右侧自适应与双飞翼布局](http://blog.simmzl.cn/2017/11/左侧定宽，右侧自适应与双飞翼布局.html)
+
+### v-for使用索引
+`v-for` 遍历数组时的参数顺序已经变更，当包含 `index` 时，之前遍历数组时的参数顺序是 `(index, value)`，现在是 `(value, index)`。来和 JavaScript 的原生数组方法 (例如 `forEach` 和 `map`) 保持一致。
+
+### 右侧滚动时根据滚动位置实时计算左侧菜单active的值
+首先遍历获取每个li标签的`clientHeight`值，依次叠加并存入数组`listHeight`，之后给右侧`ul`添加`scroll`事件，获取滚动的值后，利用vue的计算属性计算当前滚动的值在`listHeight`的区间，从而通过该区间确定左侧菜单栏对应的active类的位置
