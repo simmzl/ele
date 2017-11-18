@@ -2,7 +2,7 @@
 <div class="goods">
   <div class="menu-wrapper" ref="menu">
     <ul class="content">
-      <li v-for=" (item, index) in goods" class="menu-item" :class="{'active': index ===currentIndex}">
+      <li v-for=" (item, index) in goods" class="menu-item" :class="{'active': index ===currentIndex}" @click="selectMenu(index)">
         <span class="text border-1px" ><span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}</span>
       </li>
     </ul>
@@ -25,17 +25,23 @@
               <div class="price">
                 <span class="now">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
               </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
             </div>
           </li>
         </ul>
       </li>
     </ul>
   </div>
+  <shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
 </div>
 </template>
 
 <script type="text/ecmascript-6">
   import BScroll from 'better-scroll';
+  import shopcart from '../shopcart/shopcart';
+  import cartcontrol from '../cartcontrol/cartcontrol';
 
   export default {
     props: {
@@ -58,8 +64,18 @@
           if (!bottomHeight || (this.scrollY >= topHeight && this.scrollY < bottomHeight)) {
              return i;
           }
-//          return 0;
         }
+      },
+      selectFoods() {
+        let foods = [];
+        this.goods.forEach(good => {
+          good.foods.forEach(food => {
+            if (food.count > 0) {
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     created() {
@@ -74,9 +90,12 @@
     },
     methods: {
       _initScroll() {
-        this.menuScroll = new BScroll(this.$refs.menu, {});
+        this.menuScroll = new BScroll(this.$refs.menu, {
+//          click: true
+        });
         this.foodScroll = new BScroll(this.$refs.food, {
-          probeType: 3
+          probeType: 3,
+          click: true
         });
         this.foodScroll.on('scroll', pos => {
           this.scrollY = Math.abs(Math.round(pos.y));
@@ -91,7 +110,15 @@
           height += item.clientHeight;
           this.listHeight.push(height);
         }
+      },
+      selectMenu(index) {
+        let el = this.foodList[index];
+        this.foodScroll.scrollToElement(el, 300);
       }
+    },
+    components: {
+      shopcart,
+      cartcontrol
     }
   };
 </script>
@@ -199,4 +226,8 @@
               text-decoration line-through
               color rgb(147,153,159)
               font-size 10px
+          .cartcontrol-wrapper
+            position absolute
+            right 0
+            bottom 12px
 </style>

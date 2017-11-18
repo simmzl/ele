@@ -197,3 +197,31 @@ new Vue({
 
 ### 右侧滚动时根据滚动位置实时计算左侧菜单active的值
 首先遍历获取每个li标签的`clientHeight`值，依次叠加并存入数组`listHeight`，之后给右侧`ul`添加`scroll`事件，获取滚动的值后，利用vue的计算属性计算当前滚动的值在`listHeight`的区间，从而通过该区间确定左侧菜单栏对应的active类的位置
+
+### 绑定 Class
+动态地切换 class可以通过v-bind绑定class，可以使用对象语法(传入一个对象，通过判断对象属性值是否为true来切换class)、数组语法(同理)：
+```
+:class="{'hightLight': totalCount>0}"
+
+v-bind:class="{ active: isActive, 'text-danger': hasError }">
+data: {
+  isActive: true,
+  hasError: false
+}
+```
+### ES6 多行字符串 连接字符串
+在ES6之前，拼接字符串需要使用`+`,在ES6中只需使用反引号配合`${ 变量 }`即可；
+```javascript
+// 旧版
+alert("你好，\n 我叫\n Olive");
+// ES6
+alert(`你好
+我叫
+olive`);
+
+// 旧版
+let name = 'cat';
+console.log('你好,' + name + '!');
+// ES6
+console.log( `你好,${name}!` );
+```
