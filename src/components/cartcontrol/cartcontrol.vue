@@ -32,7 +32,6 @@
         } else {
           this.food.count ++;
         }
-        console.log(this.food.count);
       },
       decreaseCount(event) {
         if (!event._constructed) {

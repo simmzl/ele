@@ -1,9 +1,10 @@
 <template>
+<div>
   <div class="shopcart">
     <div class="content">
-      <div class="content-left">
+      <div class="content-left" @click="toggleList">
         <div class="logo-wrapper">
-          <div class="logo" :class="{'hightlight': totalCount>0}">
+          <div class="logo" :class="{'hightlight': totalCount>0}" >
             <i class="icon-shopping_cart"></i>
           </div>
           <div class="number" v-show="totalCount>0">{{totalCount}}</div>
@@ -15,9 +16,37 @@
         <div class="pay" :class="(totalPrice >= minPrice) ? 'enough' : 'not-enough'">{{payDesc}}</div>
       </div>
     </div>
+    <transition name="fold">
+      <div class="shopcart-list" v-show="listShow">
+        <div class="list-header">
+          <div class="title">购物车</div>
+          <span class="empty" @click="empty">清空</span>
+        </div>
+        <div class="list-content" ref="list">
+          <ul>
+            <li class="food" v-for="food in selectFoods">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span class="">￥{{food.price * food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </transition>
   </div>
+  <transition name="fade">
+    <div class="list-mask" v-show="listShow" @click="hideMask"></div>
+  </transition>
+</div>
 </template>
 <script type="text/ecmascript-6">
+  import BScroll from 'better-scroll';
+  import cartcontrol from '../cartcontrol/cartcontrol';
+
   export default {
     props: {
       selectFoods: {
@@ -37,6 +66,11 @@
       minPrice: {
         type: Number
       }
+    },
+    data() {
+      return {
+        fold: true
+      };
     },
     computed: {
       totalPrice() {
@@ -62,7 +96,44 @@
         } else {
           return '去结算';
         }
+      },
+      listShow() {
+        if (!this.totalCount) {
+          this.fold = false;
+          return false;
+        }
+        if (this.fold) {
+          this.$nextTick(() => {
+            if (!this.scroll) {
+              this.scroll = new BScroll(this.$refs.list, {
+                click: true
+              });
+            } else {
+              this.scroll.refresh();
+            }
+          });
+        }
+        return this.fold;
       }
+    },
+    methods: {
+      toggleList() {
+        if (!this.totalCount) {
+          return;
+        }
+        this.fold = !this.fold;
+      },
+      empty() {
+        this.selectFoods.forEach(food => {
+          food.count = 0;
+        });
+      },
+      hideMask() {
+        this.fold = false;
+      }
+    },
+    components: {
+      cartcontrol
     }
   };
 </script>
@@ -153,4 +224,68 @@
           &.enough
             color #fff
             background #00b43c
+    .shopcart-list
+      position absolute
+      top 0
+      left 0
+      z-index -1
+      width 100%
+      transform translate3d(0,-100%,0)
+      &.fold-enter-active,&.fold-leave-active
+        transition all 0.5s
+      &.fold-enter,&.fold-leave-active
+        transform translate3d(0,0,0)
+      .list-header
+        height 40px
+        padding 0 18px
+        line-height 40px
+        background #f3f5f7
+        border-bottom 1px solid rgba(7,17,27,0.1)
+        .title
+          float left
+          font-size 14px
+          color rgb(7,17,27)
+        .empty
+          float right
+          font-size 12px
+          color rgb(0,160,220)
+      .list-content
+        padding 0 18px
+        max-height 217px
+        background #ffffff
+        overflow hidden
+        .food
+          position relative
+          padding 12px 0
+          box-sizing border-box
+          border-bottom 1px solid rgba(7,17,27,0.1)
+          .name
+            line-height 24px
+            font-size 14px
+            color rgb(7,17,27)
+          .price
+            position absolute
+            right 90px
+            bottom 12px
+            line-height 24px
+            color rgb(240,20,20)
+            font-size 14px
+            font-weight 700
+          .cartcontrol-wrapper
+            position absolute
+            right 0
+            bottom 6px
+  .list-mask
+    position fixed
+    top 0
+    left 0
+    width 100%
+    height 100%
+    z-index 40
+    background rgba(7,17,27,0.6)
+    backdrop-filter blur(10px)
+    &.fade-enter-active,&.fade-leave-active
+      transition opacity 0.5s
+    &.fade-enter,&.fade-leave-active
+      opacity 0
 </style>

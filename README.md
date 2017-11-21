@@ -8,7 +8,6 @@
 - vuex
 - vue-router
 - vue-resource
-- axios
 - webpack
 - eslint
 - better-scroll

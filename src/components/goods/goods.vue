@@ -91,7 +91,7 @@
     methods: {
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menu, {
-//          click: true
+          click: true
         });
         this.foodScroll = new BScroll(this.$refs.food, {
           probeType: 3,
