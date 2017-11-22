@@ -224,3 +224,29 @@ console.log('你好,' + name + '!');
 // ES6
 console.log( `你好,${name}!` );
 ```
+### 子组件和父组件之间通信
+#### 父组件good.vue --- 子组件food.vue
+
+- 首先父组件内通过import引入子组件
+- 通过components注册组件
+- 将子组件名作为标签名实现在父组件内使用子组件
+- 子组件内通过props引入父组件数据
+```javascript
+props() {
+  food: {
+    type: Object
+  }
+}
+```
+- 父组件通过在子组件标签内使用v-bind传入数据food
+```html
+<food :food="food"></food>
+```
+#### 父组件可以调用子组件方法，反之则不行
+##### 编程规范
+组件的方法如果是私有的，命名时最好在前面加上`_`，如："_show",公有则不加
+##### 调用方法
+使用 `ref` 为子组件指定一个引用 `ID`，然后在父组件中使用`this.$ref.id.show()`即可使用子组件的方法。
+### 事件修饰符
+Vue.js 为 `v-on` 提供了事件修饰符，使用@.stop阻止冒泡
+[官方文档](https://cn.vuejs.org/v2/guide/events.html#事件修饰符)
